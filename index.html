@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0E7C66">
+<meta name="description" content="Sema Kiswahili — teach simple Swahili to foreigners through chat and earn per hour for your time.">
+<title>Sema Kiswahili — Teach simple Swahili to foreigners, earn per hour</title>
+<style>
+  :root{
+    --brand:#0E7C66;
+    --brand-2:#0A5C4B;
+    --brand-deep:#073B31;
+    --brand-soft:#E6F4F0;
+    --ink:#0F1F1B;
+    --muted:#5C6F69;
+    --line:#E1EAE6;
+    --bg:#F7FAF9;
+    --surface:#FFFFFF;
+    --radius:16px;
+    --shadow-sm:0 1px 2px rgba(15,31,27,.06), 0 1px 3px rgba(15,31,27,.04);
+    --shadow-md:0 10px 30px rgba(9,40,34,.10);
+    --shadow-lg:0 30px 70px rgba(9,40,34,.18);
+    --maxw:1120px;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+  body{
+    margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;
+  }
+  img,svg{display:block;max-width:100%;}
+  a{color:inherit;text-decoration:none;}
+  h1,h2,h3,h4{margin:0;line-height:1.16;letter-spacing:-.02em;}
+  p{margin:0;} ul{margin:0;padding:0;list-style:none;} button{font:inherit;}
+  :focus-visible{outline:3px solid rgba(14,124,102,.45);outline-offset:3px;border-radius:6px;}
+  .wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 20px;}
+  @media (min-width:768px){ .wrap{padding:0 32px;} }
+
+  .skip{position:absolute;left:-9999px;top:0;z-index:100;background:var(--brand);color:#fff;padding:12px 18px;border-radius:0 0 10px 0;font-weight:700;}
+  .skip:focus{left:0;}
+
+  /* Header */
+  .site-header{position:sticky;top:0;z-index:50;background:rgba(247,250,249,.88);backdrop-filter:saturate(160%) blur(12px);-webkit-backdrop-filter:saturate(160%) blur(12px);border-bottom:1px solid transparent;transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;}
+  .site-header.scrolled{border-bottom-color:var(--line);box-shadow:0 6px 24px rgba(9,40,34,.06);background:rgba(255,255,255,.92);}
+  .header-inner{display:flex;align-items:center;gap:14px;min-height:64px;padding-top:env(safe-area-inset-top);}
+  .logo{display:flex;align-items:center;gap:11px;min-width:0;}
+  .logo-mark{width:38px;height:38px;flex:0 0 auto;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;display:grid;place-items:center;font-weight:800;font-size:14px;letter-spacing:.5px;box-shadow:0 4px 14px rgba(14,124,102,.28);}
+  .logo-text{min-width:0;}
+  .logo-text strong{display:block;font-size:15.5px;font-weight:750;letter-spacing:-.01em;white-space:nowrap;}
+  .logo-text span{display:block;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;}
+  .nav{margin-left:auto;display:none;align-items:center;gap:6px;}
+  .nav a{padding:9px 14px;border-radius:9px;font-size:14.5px;font-weight:600;color:#2A3D37;transition:background .15s,color .15s;}
+  .nav a:hover{background:var(--brand-soft);color:var(--brand-2);}
+  .header-actions{display:flex;align-items:center;gap:8px;margin-left:auto;}
+  .nav ~ .header-actions{margin-left:8px;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid transparent;border-radius:11px;padding:12px 20px;font-size:15px;font-weight:700;letter-spacing:-.01em;cursor:pointer;white-space:nowrap;transition:transform .12s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;}
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;box-shadow:0 8px 22px rgba(14,124,102,.30);}
+  .btn-primary:hover{box-shadow:0 12px 30px rgba(14,124,102,.38);}
+  .btn-ghost{background:var(--surface);border-color:var(--line);color:var(--ink);box-shadow:var(--shadow-sm);}
+  .btn-ghost:hover{border-color:#C9D8D3;background:#FCFDFD;}
+  .btn-sm{padding:9px 16px;font-size:14px;border-radius:10px;}
+  .btn-lg{padding:15px 26px;font-size:16px;border-radius:13px;}
+  .btn .arrow{transition:transform .18s ease;}
+  .btn:hover .arrow{transform:translateX(3px);}
+  .menu-toggle{display:grid;place-items:center;width:42px;height:42px;border:1px solid var(--line);background:var(--surface);border-radius:11px;color:var(--ink);cursor:pointer;box-shadow:var(--shadow-sm);}
+  .menu-toggle .icon-close{display:none;}
+  .menu-toggle[aria-expanded="true"] .icon-open{display:none;}
+  .menu-toggle[aria-expanded="true"] .icon-close{display:block;}
+  .mobile-nav{display:none;border-top:1px solid var(--line);background:var(--surface);padding:10px 20px 18px;box-shadow:0 18px 30px rgba(9,40,34,.08);}
+  .mobile-nav.open{display:block;}
+  .mobile-nav a{display:block;padding:13px 4px;font-size:15.5px;font-weight:650;border-bottom:1px solid var(--line);color:#243A33;}
+  .mobile-nav a:last-of-type{border-bottom:0;}
+  .mobile-nav .btn{width:100%;margin-top:12px;}
+  @media (min-width:900px){ .nav{display:flex;} .menu-toggle{display:none;} .mobile-nav{display:none !important;} .header-inner{min-height:74px;} }
+
+  /* Hero */
+  .hero{position:relative;overflow:hidden;padding:44px 0 56px;background:radial-gradient(720px 420px at 88% -8%, rgba(14,124,102,.16), transparent 62%),radial-gradient(520px 380px at 4% 6%, rgba(14,124,102,.09), transparent 60%),linear-gradient(180deg,#FFFFFF 0%, var(--bg) 68%);}
+  .hero::after{content:"";position:absolute;inset:auto 0 0 0;height:1px;background:linear-gradient(90deg,transparent, var(--line) 20%, var(--line) 80%, transparent);}
+  .hero-grid{display:grid;gap:40px;align-items:center;}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 13px 6px 8px;border-radius:999px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-sm);font-size:12px;font-weight:700;color:var(--brand-2);letter-spacing:.02em;}
+  .eyebrow .pip{width:20px;height:20px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:11px;}
+  .hero h1{margin-top:20px;font-size:clamp(2rem, 6.4vw, 3.5rem);font-weight:800;letter-spacing:-.035em;}
+  .hero h1 .accent{color:var(--brand);position:relative;white-space:nowrap;}
+  .hero-lede{margin-top:18px;font-size:clamp(1rem, 2.6vw, 1.125rem);color:var(--muted);max-width:56ch;}
+  .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;}
+  .hero-cta .btn{flex:1 1 auto;min-width:180px;}
+  .hero-note{display:flex;align-items:center;gap:8px;margin-top:16px;font-size:13px;color:var(--muted);font-weight:600;flex-wrap:wrap;}
+  .hero-note svg{flex:0 0 auto;color:var(--brand);}
+  .rate-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;background:var(--brand-soft);border:1px solid rgba(14,124,102,.22);font-size:11.5px;font-weight:800;letter-spacing:.02em;color:var(--brand-2);}
+  .rate-badge i{width:6px;height:6px;border-radius:50%;background:#16A34A;display:block;}
+  .social-proof{display:flex;align-items:center;gap:14px;margin-top:30px;padding-top:24px;border-top:1px solid var(--line);flex-wrap:wrap;}
+  .avatar-stack{display:flex;}
+  .avatar-stack span{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;border:2.5px solid var(--bg);margin-left:-10px;}
+  .avatar-stack span:first-child{margin-left:0;}
+  .social-proof p{font-size:13.5px;color:var(--muted);font-weight:600;}
+  .social-proof strong{color:var(--ink);font-weight:800;}
+  .hero-visual{display:flex;justify-content:center;perspective:1200px;}
+  .phone{position:relative;width:min(320px, 88vw);background:#0B241F;border-radius:40px;padding:10px;box-shadow:var(--shadow-lg), 0 0 0 1px rgba(255,255,255,.06) inset;}
+  .phone::before{content:"";position:absolute;top:14px;left:50%;transform:translateX(-50%);width:88px;height:20px;background:#0B241F;border-radius:0 0 14px 14px;z-index:3;}
+  .phone-screen{background:#EFF4F2;border-radius:31px;overflow:hidden;height:min(560px, 116vw);display:flex;flex-direction:column;}
+  .p-head{display:flex;align-items:center;gap:10px;padding:26px 14px 12px;background:#fff;border-bottom:1px solid var(--line);flex:0 0 auto;}
+  .p-av{width:36px;height:36px;border-radius:50%;background:#E4572E;color:#fff;display:grid;place-items:center;font-size:12.5px;font-weight:800;flex:0 0 auto;}
+  .p-head h4{font-size:13.5px;font-weight:750;letter-spacing:-.01em;}
+  .p-head p{font-size:11px;color:var(--muted);font-weight:600;margin-top:1px;}
+  .p-rate{margin-left:auto;flex:0 0 auto;font-size:9.5px;font-weight:800;letter-spacing:.04em;color:var(--brand-2);background:var(--brand-soft);padding:4px 8px;border-radius:999px;white-space:nowrap;}
+  .p-body{flex:1;min-height:0;padding:14px 12px;display:flex;flex-direction:column;gap:8px;overflow:hidden;}
+  .p-day{align-self:center;font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.9);border:1px solid var(--line);padding:3px 10px;border-radius:999px;margin-bottom:2px;}
+  .p-msg{display:flex;}
+  .p-msg.out{justify-content:flex-end;}
+  .p-bubble{max-width:84%;padding:8px 11px 6px;border-radius:14px;font-size:12.5px;line-height:1.4;box-shadow:0 1px 2px rgba(15,31,27,.05);}
+  .p-msg.in .p-bubble{background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px;}
+  .p-msg.out .p-bubble{background:var(--brand);color:#fff;border-bottom-right-radius:4px;}
+  .p-bubble small{display:block;margin-top:3px;font-size:10px;font-style:italic;color:var(--muted);}
+  .p-msg.out .p-bubble small{color:rgba(255,255,255,.78);}
+  .p-earnings{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:7px 12px;background:var(--brand-soft);border-top:1px solid var(--line);font-size:10.5px;font-weight:750;color:var(--brand-2);letter-spacing:.01em;}
+  .p-earnings i{width:6px;height:6px;border-radius:50%;background:#16A34A;display:block;flex:0 0 auto;}
+  .p-earnings span{margin-left:auto;font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);}
+  .p-composer{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:9px 10px;background:#fff;border-top:1px solid var(--line);}
+  .p-input{flex:1;height:32px;border-radius:16px;background:#F3F7F5;border:1px solid var(--line);display:flex;align-items:center;padding:0 12px;font-size:11.5px;color:#93A39E;font-weight:600;}
+  .p-send{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center;color:#fff;flex:0 0 auto;}
+  @media (min-width:900px){ .hero{padding:72px 0 84px;} .hero-grid{grid-template-columns:1.08fr .92fr;gap:56px;} .hero-cta .btn{flex:0 0 auto;} .phone{width:330px;} }
+
+  /* Stats */
+  .stats{background:var(--brand-deep);color:#fff;padding:26px 0;}
+  .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px 12px;text-align:center;}
+  .stat strong{display:block;font-size:clamp(1.5rem, 5vw, 2rem);font-weight:800;letter-spacing:-.03em;color:#fff;}
+  .stat span{display:block;margin-top:4px;font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.66);}
+  @media (min-width:760px){ .stats{padding:34px 0;} .stats-grid{grid-template-columns:repeat(4,1fr);gap:12px;} }
+
+  /* Sections */
+  .section{padding:64px 0;}
+  .section-alt{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .section-head{max-width:62ch;}
+  .section-head.center{margin:0 auto;text-align:center;}
+  .kicker{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--brand);margin-bottom:12px;}
+  .section h2{font-size:clamp(1.55rem, 4.4vw, 2.35rem);font-weight:800;letter-spacing:-.03em;}
+  .section-head p{margin-top:14px;font-size:clamp(.98rem, 2.4vw, 1.06rem);color:var(--muted);}
+
+  .cards{display:grid;gap:16px;margin-top:38px;grid-template-columns:1fr;}
+  @media (min-width:640px){ .cards{grid-template-columns:repeat(2,1fr);gap:18px;} }
+  @media (min-width:980px){ .cards{grid-template-columns:repeat(3,1fr);} }
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px 22px 24px;box-shadow:var(--shadow-sm);transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;}
+  .card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:#CFDDD8;}
+  .card-icon{width:42px;height:42px;border-radius:12px;background:var(--brand-soft);color:var(--brand-2);display:grid;place-items:center;margin-bottom:15px;}
+  .card h3{font-size:16px;font-weight:750;letter-spacing:-.015em;}
+  .card p{margin-top:8px;font-size:14.2px;color:var(--muted);line-height:1.55;}
+
+  .steps{display:grid;gap:16px;margin-top:38px;}
+  @media (min-width:820px){ .steps{grid-template-columns:repeat(4,1fr);gap:18px;} }
+  .step{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px 20px 22px;box-shadow:var(--shadow-sm);}
+  .step-num{width:34px;height:34px;border-radius:10px;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:800;margin-bottom:14px;}
+  .step h3{font-size:15.5px;font-weight:750;letter-spacing:-.015em;}
+  .step p{margin-top:7px;font-size:14px;color:var(--muted);line-height:1.55;}
+
+  .showcase{display:grid;gap:36px;align-items:center;}
+  @media (min-width:900px){ .showcase{grid-template-columns:1fr 1fr;gap:56px;} }
+  .convo{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow-md);}
+  .convo-top{display:flex;align-items:center;gap:11px;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:16px;}
+  .convo-top .p-av{background:#0E7C66;}
+  .convo-top h4{font-size:14px;font-weight:750;}
+  .convo-top p{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:1px;}
+  .convo-badge{margin-left:auto;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-2);background:var(--brand-soft);padding:5px 9px;border-radius:999px;}
+  .convo-body{display:flex;flex-direction:column;gap:9px;}
+  .convo-body .p-bubble{max-width:88%;font-size:13.5px;}
+  .convo-foot{display:flex;align-items:center;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;font-weight:650;color:var(--muted);}
+  .convo-foot svg{color:var(--brand);flex:0 0 auto;}
+  .convo-earn{display:flex;align-items:center;gap:8px;margin-top:12px;padding:11px 14px;border-radius:12px;background:var(--brand-soft);border:1px solid rgba(14,124,102,.18);font-size:12.5px;font-weight:750;color:var(--brand-2);}
+  .convo-earn i{width:7px;height:7px;border-radius:50%;background:#16A34A;display:block;flex:0 0 auto;}
+  .convo-earn span{margin-left:auto;font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);}
+  .showcase-copy .checklist{margin-top:22px;display:grid;gap:12px;}
+  .checklist li{display:flex;gap:11px;font-size:14.5px;color:#2C423B;line-height:1.5;}
+  .checklist .tick{flex:0 0 auto;width:21px;height:21px;border-radius:50%;background:var(--brand-soft);color:var(--brand-2);display:grid;place-items:center;margin-top:2px;}
+  .checklist strong{font-weight:750;color:var(--ink);}
+
+  .quotes{display:grid;gap:16px;margin-top:38px;}
+  @media (min-width:820px){ .quotes{grid-template-columns:repeat(3,1fr);gap:18px;} }
+  .quote{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px 22px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;}
+  .quote-mark{color:var(--brand);opacity:.28;margin-bottom:10px;}
+  .quote p{font-size:14.5px;color:#2C423B;line-height:1.6;flex:1;}
+  .quote-foot{display:flex;align-items:center;gap:11px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line);}
+  .quote-av{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:12.5px;font-weight:800;flex:0 0 auto;}
+  .quote-foot strong{display:block;font-size:13.5px;font-weight:750;}
+  .quote-foot span{display:block;font-size:11.5px;color:var(--muted);font-weight:600;margin-top:1px;}
+  .quote-earn{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:4px 10px;border-radius:999px;background:var(--brand-soft);font-size:11px;font-weight:800;color:var(--brand-2);letter-spacing:.02em;align-self:flex-start;}
+
+  .cta-band{position:relative;overflow:hidden;padding:60px 0;background:radial-gradient(620px 340px at 85% 15%, rgba(255,255,255,.13), transparent 60%),linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 55%, var(--brand-deep) 100%);color:#fff;text-align:center;}
+  .cta-band h2{font-size:clamp(1.6rem, 4.8vw, 2.5rem);font-weight:800;letter-spacing:-.03em;}
+  .cta-band p{margin:14px auto 0;max-width:52ch;font-size:clamp(.98rem, 2.4vw, 1.08rem);color:rgba(255,255,255,.84);}
+  .cta-band .btn{margin-top:28px;background:#fff;color:var(--brand-2);box-shadow:0 14px 34px rgba(0,0,0,.22);padding:15px 30px;font-size:16px;border-radius:13px;}
+  .cta-band .btn:hover{background:#F4FBF9;}
+  .cta-micro{margin-top:14px;font-size:12.5px;font-weight:650;color:rgba(255,255,255,.66);letter-spacing:.02em;}
+
+  .site-footer{background:#081714;color:rgba(255,255,255,.72);padding:46px 0 calc(28px + env(safe-area-inset-bottom));font-size:14px;}
+  .footer-grid{display:grid;gap:30px;}
+  @media (min-width:820px){ .footer-grid{grid-template-columns:1.6fr 1fr 1fr;gap:40px;} }
+  .footer-brand .logo-mark{box-shadow:none;}
+  .footer-brand p{margin-top:14px;max-width:38ch;font-size:13.5px;line-height:1.65;color:rgba(255,255,255,.62);}
+  .footer-col h4{font-size:11.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:14px;}
+  .footer-col li{margin-bottom:10px;}
+  .footer-col a{font-size:14px;color:rgba(255,255,255,.78);transition:color .15s;}
+  .footer-col a:hover{color:#fff;}
+  .footer-bottom{margin-top:36px;padding-top:22px;border-top:1px solid rgba(255,255,255,.10);display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;font-size:12.5px;color:rgba(255,255,255,.48);}
+  .footer-bottom .secure-tag{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:10px;color:rgba(255,255,255,.7);}
+  .footer-bottom .secure-tag i{width:6px;height:6px;border-radius:50%;background:#22C55E;display:block;}
+
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease, transform .55s cubic-bezier(.22,.8,.3,1);}
+  .reveal.in{opacity:1;transform:none;}
+
+  /* Loading overlay */
+  .loading-overlay{position:fixed;inset:0;background:rgba(7,17,15,.72);display:none;justify-content:center;align-items:center;z-index:1000;padding:16px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
+  .loading-overlay.show{display:flex;}
+  .loading-popup{background:var(--surface);border-radius:20px;padding:32px 24px;box-shadow:var(--shadow-lg);text-align:center;max-width:280px;width:100%;border:1px solid var(--line);position:relative;overflow:hidden;}
+  .loading-popup::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--brand),#33b864);}
+  .loading-spinner{width:50px;height:50px;border:4px solid rgba(14,124,102,.12);border-top-color:var(--brand);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-text{font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:8px;}
+  .loading-subtext{font-size:.85rem;color:var(--muted);}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .reveal{opacity:1;transform:none;transition:none;}
+    .card:hover{transform:none;}
+    .btn .arrow{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to main content</a>
+
+<header class="site-header" id="siteHeader">
+  <div class="wrap">
+    <div class="header-inner">
+      <a class="logo" href="index.html" aria-label="Sema Kiswahili — home">
+        <span class="logo-mark" aria-hidden="true">SK</span>
+        <span class="logo-text">
+          <strong>Sema Kiswahili</strong>
+          <span>Teach &amp; earn</span>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#features">Why teach here</a>
+        <a href="#how">How it works</a>
+        <a href="#conversation">Sample session</a>
+        <a href="#community">Tutor stories</a>
+      </nav>
+      <div class="header-actions">
+        <a class="btn btn-primary btn-sm" href="signup.html">
+          Start teaching
+          <svg class="arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </a>
+        <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="mobileNav" aria-label="Open menu">
+          <svg class="icon-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          <svg class="icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#features">Why teach here</a>
+    <a href="#how">How it works</a>
+    <a href="#conversation">Sample session</a>
+    <a href="#community">Tutor stories</a>
+    <a class="btn btn-primary" href="signup.html">
+      Start teaching
+      <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">
+            <span class="pip" aria-hidden="true">💬</span>
+            Teach Swahili · Earn per hour
+          </span>
+          <h1>
+            Teach simple Swahili to foreigners<br class="hide-sm">
+            and <span class="accent">earn for every hour</span> you chat.
+          </h1>
+          <p class="hero-lede">
+            Sema Kiswahili connects Kenyans with foreigners who want to learn the
+            basics of Swahili. Pick a learner, say <strong>Jambo</strong>, and get
+            paid by the hour for conversations you would happily have for free —
+            greetings, numbers, market talk, directions.
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn-primary btn-lg" href="signup.html">
+              Start teaching
+              <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn-ghost btn-lg" href="#how">See how it works</a>
+          </div>
+          <p class="hero-note">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+            Free to join · Quick sign-up
+            <span class="rate-badge"><i aria-hidden="true"></i> $100–$250/hr</span>
+          </p>
+          <div class="social-proof">
+            <div class="avatar-stack" aria-hidden="true">
+              <span style="background:#E4572E">EW</span>
+              <span style="background:#7C3AED">LC</span>
+              <span style="background:#0891B2">SR</span>
+              <span style="background:#DB2777">YT</span>
+              <span style="background:#0E7C66">+</span>
+            </div>
+            <p><strong>181 learners</strong> from 20 countries are waiting for a Kenyan tutor</p>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="phone" role="img" aria-label="Preview of a Sema Kiswahili teaching session between a Kenyan tutor and Emma Wilson from the United Kingdom, showing a session timer and earnings">
+            <div class="phone-screen">
+              <div class="p-head">
+                <span class="p-av" aria-hidden="true">EW</span>
+                <div>
+                  <h4>Emma Wilson</h4>
+                  <p>🇬🇧 United Kingdom · Beginner</p>
+                </div>
+                <span class="p-rate">$180/hr</span>
+              </div>
+              <div class="p-body">
+                <span class="p-day">Today</span>
+                <div class="p-msg in">
+                  <div class="p-bubble">Jambo! My name is Emma. 👋<small>Learner · United Kingdom</small></div>
+                </div>
+                <div class="p-msg out">
+                  <div class="p-bubble">Jambo Emma! Karibu.<small>Hello Emma! Welcome.</small></div>
+                </div>
+                <div class="p-msg out">
+                  <div class="p-bubble">Tuanze na salamu.<small>Let's start with greetings.</small></div>
+                </div>
+                <div class="p-msg in">
+                  <div class="p-bubble">Asante! How do I say “good morning”?</div>
+                </div>
+                <div class="p-msg out">
+                  <div class="p-bubble">Habari za asubuhi.<small>Good morning.</small></div>
+                </div>
+              </div>
+              <div class="p-earnings">
+                <i aria-hidden="true"></i>
+                Session 24 min · $72 earned
+                <span>Live</span>
+              </div>
+              <div class="p-composer">
+                <div class="p-input">Andika ujumbe…</div>
+                <div class="p-send" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4l17.45-7.48a1 1 0 000-1.84L3.4 3.6a.99.99 0 00-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.5-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats" aria-label="Teaching opportunity at a glance">
+    <div class="wrap">
+      <div class="stats-grid">
+        <div class="stat"><strong>181</strong><span>Learners waiting</span></div>
+        <div class="stat"><strong>20</strong><span>Countries</span></div>
+        <div class="stat"><strong>$100–$250</strong><span>Per hour</span></div>
+        <div class="stat"><strong>100%</strong><span>Flexible hours</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="kicker">Why teach here</span>
+        <h2>Your Swahili is the qualification. Your time is what gets paid.</h2>
+        <p>
+          You do not need a teaching certificate, a laptop or a lesson plan. If you
+          can explain “pole pole” to someone who has never heard it, you can teach
+          here — and get paid for the hour you spend doing it.
+        </p>
+      </div>
+      <div class="cards">
+        <article class="card reveal">
+          <div class="card-icon" aria-hidden="true"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div>
+          <h3>Paid by the hour</h3>
+          <p>Every teaching session is timed and paid at your hourly rate. The earnings bar in the chat shows the minutes and shillings adding up as you go.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-icon" aria-hidden="true"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13A4 4 0 0119 7"/></svg></div>
+          <h3>Learners are already here</h3>
+          <p>No marketing and no chasing students. 181 foreigners have already signed up, chosen their level and written down why they want to learn.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-icon" aria-hidden="true"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h7v14H4zM13 5h7v14h-7z"/><path d="M11 9h2M11 13h2"/></svg></div>
+          <h3>No lesson planning</h3>
+          <p>Chats open with a greeting and suggested phrases. Teach the basics you already use every day — greetings, numbers, prices, directions.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-icon" aria-hidden="true"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></div>
+          <h3>Teach from your phone</h3>
+          <p>Between lectures, on a lunch break, in a matatu queue. The whole teaching workspace is thumb-sized and works on any screen.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-icon" aria-hidden="true"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-9 8.5 8.5 8.5 0 01-3.5-.75L3 21l1.75-5.5A8.5 8.5 0 1121 11.5z"/><path d="M8 10h8M8 14h5"/></svg></div>
+          <h3>Bilingual by design</h3>
+          <p>Every Swahili message carries a short English gloss, so a beginner follows the thread without you repeating yourself three times.</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-icon" aria-hidden="true"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M6 20V10M12 20V4M18 20v-7"/></svg></div>
+          <h3>You set the pace</h3>
+          <p>Accept a session when you are free, step away when you are not. No schedules, no penalties and no minimum hours to keep your place.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="how">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">How it works</span>
+        <h2>From opening the app to your first paid session in under a minute.</h2>
+        <p>The process is deliberately simple. No sign-up wall, no interview, no placement test — and nothing to install.</p>
+      </div>
+      <div class="steps">
+        <article class="step reveal">
+          <div class="step-num" aria-hidden="true">1</div>
+          <h3>Browse the learners</h3>
+          <p>Open the chat list and scan 181 foreigners from 20 countries. Each one shows their level, country and why they want to learn Swahili.</p>
+        </article>
+        <article class="step reveal">
+          <div class="step-num" aria-hidden="true">2</div>
+          <h3>Pick a chat</h3>
+          <p>Choose a learner whose level and goal you can support. Search by name or country if you already have someone in mind.</p>
+        </article>
+        <article class="step reveal">
+          <div class="step-num" aria-hidden="true">3</div>
+          <h3>Say Jambo</h3>
+          <p>Every conversation opens with a friendly greeting from the learner, so there is never an awkward first message to think up.</p>
+        </article>
+        <article class="step reveal">
+          <div class="step-num" aria-hidden="true">4</div>
+          <h3>Teach and earn</h3>
+          <p>Reply at your own pace. The session timer runs, the earnings add up, and your balance grows with every minute you teach.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="conversation">
+    <div class="wrap">
+      <div class="showcase">
+        <div class="convo reveal">
+          <div class="convo-top">
+            <span class="p-av" aria-hidden="true">LC</span>
+            <div>
+              <h4>Liam Carter</h4>
+              <p>🇺🇸 United States · Beginner</p>
+            </div>
+            <span class="convo-badge">Paid session</span>
+          </div>
+          <div class="convo-body">
+            <div class="p-msg in">
+              <div class="p-bubble">Jambo! My name is Liam. 👋<small>Learner · United States</small></div>
+            </div>
+            <div class="p-msg out">
+              <div class="p-bubble">Jambo Liam! Karibu kwenye somo.<small>Hello Liam! Welcome to the lesson.</small></div>
+            </div>
+            <div class="p-msg out">
+              <div class="p-bubble">Tuanze na salamu za kila siku.<small>Let's start with everyday greetings.</small></div>
+            </div>
+            <div class="p-msg in">
+              <div class="p-bubble">Asante! What does “pole pole” mean?</div>
+            </div>
+            <div class="p-msg out">
+              <div class="p-bubble">“Pole pole” ni “slowly”. Tunatumia sana.<small>“Pole pole” means “slowly”. We use it a lot.</small></div>
+            </div>
+          </div>
+          <div class="convo-earn">
+            <i aria-hidden="true"></i>
+            Session 42 min · $105 earned
+            <span>Paid</span>
+          </div>
+          <div class="convo-foot">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>
+            Suggested phrases and translations do the heavy lifting
+          </div>
+        </div>
+        <div class="showcase-copy reveal">
+          <span class="kicker">Inside the session</span>
+          <h2>Teaching that feels like chatting — and pays like work.</h2>
+          <p class="hero-lede" style="margin-top:14px;">
+            The session screen does the quiet work: it greets the learner, translates
+            for them, and keeps a running total of your time. You bring the language
+            and the patience.
+          </p>
+          <ul class="checklist">
+            <li><span class="tick" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span><strong>Instant greeting:</strong> the learner opens with a Jambo and a short introduction, so you never start cold.</span></li>
+            <li><span class="tick" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span><strong>Built-in translation:</strong> each Swahili line carries a short English gloss, so beginners keep up with you.</span></li>
+            <li><span class="tick" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span><strong>Suggested replies:</strong> helpful phrases appear after the greeting — tap one and keep teaching.</span></li>
+            <li><span class="tick" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span><span><strong>Session timer &amp; earnings:</strong> every minute is logged and added to your balance at your hourly rate.</span></li>
+          </ul>
+          <div class="hero-cta" style="margin-top:26px;">
+            <a class="btn btn-primary" href="signup.html">
+              Begin your first session
+              <svg class="arrow" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="community">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="kicker">Tutor stories</span>
+        <h2>Kenyans who turned everyday Swahili into extra income.</h2>
+        <p>The pattern is simple: the language you already speak is exactly what someone else is willing to pay to learn.</p>
+      </div>
+      <div class="quotes">
+        <figure class="quote reveal" style="margin:0;">
+          <div class="quote-mark" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M7.5 5C5 5 3 7.2 3 10c0 2.6 1.9 4.6 4.4 4.6.5 0 .9-.1 1.2-.2-.4 1.6-1.7 2.9-3.3 3.4l.7 1.9C9.4 18.6 12 15.5 12 11.3 12 7.6 10.2 5 7.5 5zm9.6 0C14.6 5 12.6 7.2 12.6 10c0 2.6 1.9 4.6 4.4 4.6.5 0 .9-.1 1.2-.2-.4 1.6-1.7 2.9-3.3 3.4l.7 1.9c3.4-1.1 6-4.2 6-8.4C19 7.6 17.2 5 17.1 5z"/></svg></div>
+          <blockquote style="margin:0;"><p>“I teach between lectures. Two hours in the evening covers my data, my fare and a little extra. I never thought my Swahili was worth anything until someone offered to pay for it.”</p></blockquote>
+          <span class="quote-earn">≈ $360 / week</span>
+          <figcaption class="quote-foot">
+            <span class="quote-av" style="background:#0E7C66" aria-hidden="true">WK</span>
+            <div><strong>Wanjiku K.</strong><span>Tutor · Nairobi</span></div>
+          </figcaption>
+        </figure>
+        <figure class="quote reveal" style="margin:0;">
+          <div class="quote-mark" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M7.5 5C5 5 3 7.2 3 10c0 2.6 1.9 4.6 4.4 4.6.5 0 .9-.1 1.2-.2-.4 1.6-1.7 2.9-3.3 3.4l.7 1.9C9.4 18.6 12 15.5 12 11.3 12 7.6 10.2 5 7.5 5zm9.6 0C14.6 5 12.6 7.2 12.6 10c0 2.6 1.9 4.6 4.4 4.6.5 0 .9-.1 1.2-.2-.4 1.6-1.7 2.9-3.3 3.4l.7 1.9c3.4-1.1 6-4.2 6-8.4C19 7.6 17.2 5 17.1 5z"/></svg></div>
+          <blockquote style="margin:0;"><p>“I did not realise how much I knew until someone asked me why we say ‘pole pole’. Explaining it is easy, and the app handles the timing and the payment.”</p></blockquote>
+          <span class="quote-earn">≈ $270 / week</span>
+          <figcaption class="quote-foot">
+            <span class="quote-av" style="background:#7C3AED" aria-hidden="true">BO</span>
+            <div><strong>Brian O.</strong><span>Tutor · Kisumu</span></div>
+          </figcaption>
+        </figure>
+        <figure class="quote reveal" style="margin:0;">
+          <div class="quote-mark" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M7.5 5C5 5 3 7.2 3 10c0 2.6 1.9 4.6 4.4 4.6.5 0 .9-.1 1.2-.2-.4 1.6-1.7 2.9-3.3 3.4l.7 1.9C9.4 18.6 12 15.5 12 11.3 12 7.6 10.2 5 7.5 5zm9.6 0C14.6 5 12.6 7.2 12.6 10c0 2.6 1.9 4.6 4.4 4.6.5 0 .9-.1 1.2-.2-.4 1.6-1.7 2.9-3.3 3.4l.7 1.9c3.4-1.1 6-4.2 6-8.4C19 7.6 17.2 5 17.1 5z"/></svg></div>
+          <blockquote style="margin:0;"><p>“The tourists I meet in Mombasa always want to learn a few words. Now I get paid for the same chat I would have had for free — and I do it from my phone.”</p></blockquote>
+          <span class="quote-earn">≈ $450 / week</span>
+          <figcaption class="quote-foot">
+            <span class="quote-av" style="background:#0891B2" aria-hidden="true">AM</span>
+            <div><strong>Achieng M.</strong><span>Tutor · Mombasa</span></div>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div class="wrap">
+      <h2>Your Swahili is worth something.</h2>
+      <p>Open the app, choose a learner and start teaching. No sign-up fee, no lesson prep and no waiting — just 181 learners who want to learn from you.</p>
+      <a class="btn" href="signup.html">
+        Start teaching now
+        <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+      </a>
+      <p class="cta-micro">Works on any phone · No installation required</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="logo" href="index.html" aria-label="Sema Kiswahili — home">
+          <span class="logo-mark" aria-hidden="true">SK</span>
+          <span class="logo-text">
+            <strong style="color:#fff;">Sema Kiswahili</strong>
+            <span style="color:rgba(255,255,255,.5);">Teach &amp; earn</span>
+          </span>
+        </a>
+        <p>A conversational teaching platform that lets Kenyan Swahili speakers teach the basics to foreigners and earn per hour of chat.</p>
+      </div>
+      <nav class="footer-col" aria-label="Teaching">
+        <h4>Teaching</h4>
+        <ul>
+          <li><a href="signup.html">Become a tutor</a></li>
+          <li><a href="#features">Why teach here</a></li>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#conversation">Sample session</a></li>
+        </ul>
+      </nav>
+      <nav class="footer-col" aria-label="Community">
+        <h4>Community</h4>
+        <ul>
+          <li><a href="#community">Tutor stories</a></li>
+          <li><a href="signup.html">Learner list</a></li>
+          <li><a href="#features">Tutor guidelines</a></li>
+          <li><a href="#main">Back to top</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="year">2025</span> Sema Kiswahili. All rights reserved.</span>
+      <span class="secure-tag"><i aria-hidden="true"></i> SSL Secured</span>
+    </div>
+  </div>
+</footer>
+
+<div class="loading-overlay" id="loadingOverlay" aria-live="polite">
+  <div class="loading-popup">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Getting things ready</p>
+    <p class="loading-subtext">Preparing your teaching dashboard…</p>
+  </div>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  const header = document.getElementById("siteHeader");
+  const onScroll = () => header.classList.toggle("scrolled", window.scrollY > 8);
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  const menuToggle = document.getElementById("menuToggle");
+  const mobileNav  = document.getElementById("mobileNav");
+  function setMenu(open) {
+    menuToggle.setAttribute("aria-expanded", String(open));
+    menuToggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    mobileNav.classList.toggle("open", open);
+  }
+  menuToggle.addEventListener("click", () => setMenu(menuToggle.getAttribute("aria-expanded") !== "true"));
+  mobileNav.addEventListener("click", e => { if (e.target.closest("a")) setMenu(false); });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && mobileNav.classList.contains("open")) {
+      setMenu(false); menuToggle.focus();
+    }
+  });
+  window.addEventListener("resize", () => { if (window.innerWidth >= 900) setMenu(false); });
+
+  const reveals = document.querySelectorAll(".reveal");
+  const reduce  = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !("IntersectionObserver" in window)) {
+    reveals.forEach(el => el.classList.add("in"));
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) { entry.target.classList.add("in"); io.unobserve(entry.target); }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
+    reveals.forEach((el, i) => {
+      el.style.transitionDelay = Math.min(i * 45, 220) + "ms";
+      io.observe(el);
+    });
+  }
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // Loading overlay for signup links
+  const overlay = document.getElementById("loadingOverlay");
+  document.querySelectorAll('a[href="signup.html"]').forEach(link => {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      overlay.classList.add("show");
+      setTimeout(() => { window.location.href = "signup.html"; }, 1600);
+    });
+  });
+  window.addEventListener("pageshow", () => overlay.classList.remove("show"));
+})();
+</script>
+</body>
+</html>
