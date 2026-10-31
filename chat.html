@@ -268,7 +268,6 @@
 
   /* ================================================================
      LEARNERS — 181 active users, all online
-     Hourly rate displayed in USD ($100 – $250)
      ================================================================ */
   const TOTAL_LEARNERS = 181;
 
@@ -450,9 +449,7 @@
     const greeting = pickRandom(GREETINGS);
     const prompts  = [...PROMPTS].sort(() => Math.random() - 0.5).slice(0, 3);
     const closer   = pickRandom(CLOSERS);
-
     const applyName = (str) => (str || "").replace(/\{\{first\}\}/g, contact.first);
-
     return [
       { t: applyName(greeting.t), s: applyName(greeting.s) },
       ...prompts.map(p => ({ t: p.t, s: p.s })),
@@ -502,9 +499,7 @@
   let pollInterval = null;
 
   const CONVERSATION_EARNINGS = 8600;
-  // Tutor must stay silent this long before the learner replies.
   const REPLY_SILENCE_MS = 3200;
-  // After the tutor's last message on a finished script, close after this.
   const CLOSE_SILENCE_MS = 4000;
 
   let earningsBalance = Number(localStorage.getItem("earningsBalance") || 0);
@@ -528,9 +523,7 @@
     try {
       const list = JSON.parse(localStorage.getItem(ACTIVATED_KEY) || "[]");
       return Array.isArray(list) && list.includes(id);
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return false; }
   }
 
   function markContactActivated(id) {
@@ -566,29 +559,21 @@
   }
 
   /* ================================================================
-     PAYMENT — initiate via /api/initiate-payment
+     PAYMENT
      ================================================================ */
   async function initiateSTK(phone254, amount) {
     const response = await fetch('/api/initiate-payment', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        phone_number: phone254,
-        amount: Number(amount)
-      })
+      body: JSON.stringify({ phone_number: phone254, amount: Number(amount) })
     });
-
     const result = await response.json().catch(() => ({}));
     if (!response.ok || !result.success || !result.reference) {
       throw new Error(result.error || result.message || 'Payment initiation failed');
     }
-
     return { reference: result.reference, external: result.external_reference };
   }
 
-  /* ================================================================
-     PAYMENT — poll /api/verify-payment
-     ================================================================ */
   function pollStatus(reference, maxAttempts = 30) {
     return new Promise((resolve, reject) => {
       let attempts = 0;
@@ -598,30 +583,22 @@
           const response = await fetch(`/api/verify-payment?reference=${encodeURIComponent(reference)}`);
           const result = await response.json().catch(() => ({}));
           const status = String(result.status || '').toUpperCase();
-
           if (status === 'COMPLETED') {
-            clearInterval(pollInterval); pollInterval = null;
-            resolve(true);
+            clearInterval(pollInterval); pollInterval = null; resolve(true);
           } else if (status === 'FAILED' || status === 'CANCELLED') {
-            clearInterval(pollInterval); pollInterval = null;
-            reject(new Error('Payment failed or was cancelled'));
+            clearInterval(pollInterval); pollInterval = null; reject(new Error('Payment failed'));
           } else if (attempts >= maxAttempts) {
-            clearInterval(pollInterval); pollInterval = null;
-            reject(new Error('Verification timed out'));
+            clearInterval(pollInterval); pollInterval = null; reject(new Error('Verification timed out'));
           }
         } catch (err) {
           if (attempts >= maxAttempts) {
-            clearInterval(pollInterval); pollInterval = null;
-            reject(new Error('Verification failed'));
+            clearInterval(pollInterval); pollInterval = null; reject(new Error('Verification failed'));
           }
         }
       }, 3000);
     });
   }
 
-  /* ================================================================
-     STK OVERLAY
-     ================================================================ */
   function showStkOverlay(phone254, amount) {
     stkPhoneEl.textContent = displayPhone(phone254);
     stkAmountEl.textContent = 'KES ' + Number(amount).toLocaleString('en-KE');
@@ -643,9 +620,6 @@
     if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
   }
 
-  /* ================================================================
-     CHARGE FEE — modal → /api/initiate-payment → poll → resolve
-     ================================================================ */
   async function chargeFee({ amount, title, description }) {
     const result = await Swal.fire({
       title: title,
@@ -694,17 +668,14 @@
         const input = document.getElementById('phone-input-modal');
         const wrap = document.getElementById('phone-wrap');
         const err = document.getElementById('phone-error-msg');
-
         const showError = (msg) => {
           if (wrap) wrap.classList.add('error');
           if (err) { err.textContent = msg; err.classList.add('show'); }
           return false;
         };
-
         if (!input) return false;
         const raw = input.value.trim();
         if (!raw) return showError('Please enter your phone number.');
-
         let normalized = null;
         try {
           const r = await fetch('/api/normalize-phone', {
@@ -714,19 +685,12 @@
           });
           const d = await r.json().catch(() => ({}));
           if (r.ok && d && d.normalized_phone) normalized = d.normalized_phone;
-        } catch (e) {
-          console.warn('normalize-phone API unavailable — using local fallback', e);
-        }
-
+        } catch (e) { /* fallback */ }
         if (!normalized) normalized = normalizePhoneForBackend(raw);
-
-        if (!normalized) {
-          return showError('Please enter a valid Kenyan phone number (07… or 01…).');
-        }
+        if (!normalized) return showError('Please enter a valid Kenyan phone number (07… or 01…).');
         if (!normalized.startsWith('2547') && !normalized.startsWith('2541')) {
           return showError('Please enter a valid Kenyan phone number (07… or 01…).');
         }
-
         window._feePhone = normalized;
         return true;
       }
@@ -739,14 +703,11 @@
     try {
       Swal.fire({
         title: 'Sending M-Pesa prompt…',
-        allowOutsideClick: false,
-        allowEscapeKey: false,
+        allowOutsideClick: false, allowEscapeKey: false,
         didOpen: () => Swal.showLoading()
       });
-
       const { reference } = await initiateSTK(phone254, amount);
       Swal.close();
-
       showStkOverlay(phone254, amount);
       await pollStatus(reference, 30);
       hideStkOverlay();
@@ -765,21 +726,13 @@
     }
   }
 
-  /* ================================================================
-     OPEN CHAT — per-learner activation gate
-     ================================================================ */
   async function tryOpenChat(contact) {
-    if (isContactActivated(contact.id)) {
-      openChat(contact);
-      return;
-    }
-
+    if (isContactActivated(contact.id)) { openChat(contact); return; }
     const paid = await chargeFee({
       amount: 199,
       title: `Unlock ${contact.first}'s chat`,
       description: `Pay KES 199 once to unlock your conversation with ${contact.first} from ${contact.country}. This unlock applies to this learner only.`
     });
-
     if (paid) {
       markContactActivated(contact.id);
       await Swal.fire({
@@ -922,7 +875,7 @@
   });
 
   /* ================================================================
-     OPEN / CLOSE CHAT
+     OPEN CHAT — pushes a history entry so back is intercepted
      ================================================================ */
   function openChat(contact) {
     session++;
@@ -948,11 +901,14 @@
     hideQuickReplies();
     msgInput.value = "";
 
+    // Push ONE history entry so back from chat returns to the learner list.
     if (!chatHistoryPushed) {
       try {
-        history.pushState({ chat: true }, "");
+        history.pushState({ chatOpen: true }, "");
         chatHistoryPushed = true;
-      } catch (e) { /* ignore */ }
+      } catch (e) {
+        chatHistoryPushed = false;
+      }
     }
 
     app.classList.add("chat-open");
@@ -977,10 +933,12 @@
     }, readPause(900, 1500));
   }
 
-  // Single source of truth: closes the chat view AND cleans up history.
-  function closeChatUI() {
-    if (!app.classList.contains("chat-open")) return;
-
+  /* ================================================================
+     CLOSE CHAT VIEW  (UI only — no history manipulation)
+     Used by popstate (hardware back) because the browser has already
+     popped the history entry for us.
+     ================================================================ */
+  function closeChatView() {
     conversationPhase = "idle";
     session++;
     clearCloseTimer();
@@ -997,9 +955,6 @@
     learnerTyping = false;
     pendingReply = false;
 
-    const needsPop = chatHistoryPushed;
-    chatHistoryPushed = false;
-
     app.classList.remove("chat-open");
 
     setTimeout(() => {
@@ -1007,8 +962,20 @@
         messages.innerHTML = '<div class="day-divider">Today</div>';
       }
     }, 320);
+  }
 
-    // Remove the extra history entry we pushed so we stay on the learner list.
+  /* ================================================================
+     CLOSE CHAT UI  (UI + history cleanup)
+     Used by the in-app back button and by closeConversation.
+     ================================================================ */
+  function closeChatUI() {
+    if (!app.classList.contains("chat-open")) return;
+
+    const needsPop = chatHistoryPushed;
+    chatHistoryPushed = false;
+
+    closeChatView();
+
     if (needsPop) {
       try { history.back(); } catch (e) { /* ignore */ }
     }
@@ -1046,10 +1013,6 @@
 
   /* ================================================================
      LEARNER REPLY SCHEDULING (debounced)
-     - Tutor speaks → reset the silence timer.
-     - Learner replies once the tutor has been silent for REPLY_SILENCE_MS.
-     - If the tutor speaks again while the learner is typing → the learner
-       finishes that bubble, then replies one more time (pendingReply).
      ================================================================ */
   function scheduleLearnerReply(delay = REPLY_SILENCE_MS) {
     clearReplyTimer();
@@ -1064,21 +1027,16 @@
 
   function deliverNextLearnerMessage() {
     if (scriptIndex >= conversationScript.length) return;
-
     const gen = session;
     const next = conversationScript[scriptIndex];
     scriptIndex++;
-
     learnerTyping = true;
     showTyping();
-
     setTimeout(() => {
       if (gen !== session) return;
       hideTyping();
       learnerTyping = false;
       addBubble(next.t, "in", next.s);
-
-      // Tutor said something while we were typing → answer that too.
       if (pendingReply) {
         pendingReply = false;
         if (scriptIndex < conversationScript.length) {
@@ -1100,8 +1058,7 @@
   }
 
   /* ================================================================
-     SEND — every tutor message resets the learner's silence timer,
-     so multiple bubbles to answer ONE question = ONE learner reply.
+     SEND
      ================================================================ */
   function sendMessage(raw) {
     const text = (raw || "").trim();
@@ -1111,16 +1068,13 @@
     msgInput.value = "";
     hideQuickReplies();
 
-    // Wait for the learner's greeting before any scripted reply.
     if (!openerDelivered) return;
 
-    // Learner has nothing left to say — close after the tutor's turn ends.
     if (scriptIndex >= conversationScript.length) {
       scheduleCloseAfterSilence();
       return;
     }
 
-    // Debounced: the learner replies once the tutor stops typing.
     scheduleLearnerReply();
   }
 
@@ -1129,47 +1083,29 @@
      ================================================================ */
   async function doWithdraw() {
     const amount = earningsBalance;
-
     Swal.fire({
       title: 'Sending to M-Pesa…',
-      html: `
-        <div style="text-align:center; padding: 8px 0;">
-          <p style="margin-bottom: 10px;">Withdrawing <strong>KES ${amount.toLocaleString('en-KE')}</strong></p>
-          <p style="color:#6B7C77; font-size:0.9rem;">Connecting to M-Pesa…</p>
-        </div>
-      `,
-      allowOutsideClick: false,
-      allowEscapeKey: false,
+      html: `<div style="text-align:center; padding: 8px 0;"><p style="margin-bottom: 10px;">Withdrawing <strong>KES ${amount.toLocaleString('en-KE')}</strong></p><p style="color:#6B7C77; font-size:0.9rem;">Connecting to M-Pesa…</p></div>`,
+      allowOutsideClick: false, allowEscapeKey: false,
       didOpen: () => Swal.showLoading()
     });
-
     await new Promise(r => setTimeout(r, 1800));
     Swal.update({
       title: 'Confirming with M-Pesa…',
       html: `<div style="text-align:center; padding: 8px 0;"><p style="color:#6B7C77; font-size:0.9rem;">Securing your transaction…</p></div>`,
       didOpen: () => Swal.showLoading()
     });
-
     await new Promise(r => setTimeout(r, 1600));
-
     earningsBalance = 0;
     localStorage.setItem('earningsBalance', '0');
     updateBalanceDisplay();
-
     await Swal.fire({
       title: 'Withdrawal successful',
-      html: `
-        <div style="text-align:center;">
-          <div style="font-size:2.5rem; margin-bottom:6px;">✅</div>
-          <p><strong>KES ${amount.toLocaleString('en-KE')}</strong> has been queued for payout to your M-Pesa number.</p>
-          <p style="color:#6B7C77; font-size:0.9rem; margin-top:12px;">As this is your first withdrawal, please allow up to <strong>24 hours</strong> for the funds to reflect. Subsequent withdrawals will be faster.</p>
-        </div>
-      `,
+      html: `<div style="text-align:center;"><div style="font-size:2.5rem; margin-bottom:6px;">✅</div><p><strong>KES ${amount.toLocaleString('en-KE')}</strong> has been queued for payout to your M-Pesa number.</p><p style="color:#6B7C77; font-size:0.9rem; margin-top:12px;">As this is your first withdrawal, please allow up to <strong>24 hours</strong> for the funds to reflect. Subsequent withdrawals will be faster.</p></div>`,
       icon: false,
       confirmButtonText: 'OK',
       confirmButtonColor: '#0E7C66',
-      allowOutsideClick: false,
-      allowEscapeKey: false
+      allowOutsideClick: false, allowEscapeKey: false
     });
   }
 
@@ -1184,18 +1120,15 @@
       });
       return;
     }
-
     if (localStorage.getItem('withdrawalFeePaid') === 'true') {
       doWithdraw();
       return;
     }
-
     const paid = await chargeFee({
       amount: 999,
       title: 'Activate withdrawals',
       description: 'Pay a one-time fee of KES 999 to activate M-Pesa withdrawals to your phone.'
     });
-
     if (paid) {
       localStorage.setItem('withdrawalFeePaid', 'true');
       await Swal.fire({
@@ -1221,7 +1154,7 @@
 
   searchEl.addEventListener("input", () => renderList(searchEl.value));
 
-  // In-app back button: let closeChatUI handle both UI and history.
+  // In-app back button → closes chat, returns to learner list, and pops history.
   backBtn.addEventListener("click", () => {
     closeChatUI();
   });
@@ -1233,15 +1166,13 @@
 
   /* ================================================================
      POPSTATE — hardware / browser back button
-     - If a chat is open, the pushed history entry has just been popped
-       by the browser. Drop chatHistoryPushed (so closeChatUI won't call
-       history.back() again) and close the UI.
-     - If no chat is open, default browser behaviour applies.
+     If a chat is open, the browser has already popped our pushed entry.
+     Just close the UI — do NOT call history.back() again.
      ================================================================ */
-  window.addEventListener('popstate', () => {
-    if (app.classList.contains('chat-open')) {
+  window.addEventListener("popstate", () => {
+    if (app.classList.contains("chat-open")) {
       chatHistoryPushed = false;
-      closeChatUI();
+      closeChatView();
     }
   });
 
