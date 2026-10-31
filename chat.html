@@ -352,11 +352,6 @@
 
   /* ================================================================
      CONVERSATION CONTENT
-     - GREETINGS: 12 dynamic greeting + introduction variations
-                  Learner speaks English with a Swahili greeting word.
-     - PROMPTS:   50 English questions the learner asks for Swahili help.
-     - CLOSERS:   10 goodbyes. Only place the learner speaks Swahili.
-     Each chat: greeting + 3 unique prompts + closer = 5 learner messages
      ================================================================ */
 
   const GREETINGS = [
@@ -452,7 +447,6 @@
   }
 
   function buildConversationScript(contact) {
-    // 1 greeting + 3 unique prompts + 1 closer = 5 learner messages
     const greeting = pickRandom(GREETINGS);
     const prompts  = [...PROMPTS].sort(() => Math.random() - 0.5).slice(0, 3);
     const closer   = pickRandom(CLOSERS);
@@ -494,18 +488,25 @@
   let session   = 0;
   let typingEl  = null;
   let closeTimer = null;
+  let replyTimer = null;
   let conversationPhase = "idle";
   let chatHistoryPushed = false;
-  let suppressNextPopstate = false;
 
   let conversationScript = [];
   let scriptIndex = 0;
   let openerDelivered = false;
+  let learnerTyping = false;
+  let pendingReply = false;
 
   let stkTimerInterval = null;
   let pollInterval = null;
 
   const CONVERSATION_EARNINGS = 8600;
+  // Tutor must stay silent this long before the learner replies.
+  const REPLY_SILENCE_MS = 3200;
+  // After the tutor's last message on a finished script, close after this.
+  const CLOSE_SILENCE_MS = 4000;
+
   let earningsBalance = Number(localStorage.getItem("earningsBalance") || 0);
 
   /* ---------------- Balance ---------------- */
@@ -802,15 +803,18 @@
     return setTimeout(() => { if (gen === session) fn(); }, ms);
   }
 
-  // Human-like typing: slower than before, scaled to message length
   function typingDelay(text) {
     const ms = 1200 + (text ? text.length : 0) * 90;
     return Math.max(2000, Math.min(ms, 5500));
   }
 
   const readPause = (min, max) => min + Math.random() * (max - min);
+
   function clearCloseTimer() {
     if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
+  }
+  function clearReplyTimer() {
+    if (replyTimer) { clearTimeout(replyTimer); replyTimer = null; }
   }
 
   let sessionTimer = null;
@@ -925,8 +929,11 @@
     current = contact;
     conversationPhase = "active";
     clearCloseTimer();
+    clearReplyTimer();
+    hideTyping();
+    learnerTyping = false;
+    pendingReply = false;
 
-    // Build the per-chat script: greeting → 3 prompts → closer
     conversationScript = buildConversationScript(contact);
     scriptIndex = 0;
     openerDelivered = false;
@@ -970,20 +977,29 @@
     }, readPause(900, 1500));
   }
 
+  // Single source of truth: closes the chat view AND cleans up history.
   function closeChatUI() {
+    if (!app.classList.contains("chat-open")) return;
+
     conversationPhase = "idle";
     session++;
     clearCloseTimer();
+    clearReplyTimer();
     hideQuickReplies();
     hideTyping();
     stopSessionTimer();
 
     current = null;
     msgInput.value = "";
-    chatHistoryPushed = false;
     openerDelivered = false;
     conversationScript = [];
     scriptIndex = 0;
+    learnerTyping = false;
+    pendingReply = false;
+
+    const needsPop = chatHistoryPushed;
+    chatHistoryPushed = false;
+
     app.classList.remove("chat-open");
 
     setTimeout(() => {
@@ -991,6 +1007,11 @@
         messages.innerHTML = '<div class="day-divider">Today</div>';
       }
     }, 320);
+
+    // Remove the extra history entry we pushed so we stay on the learner list.
+    if (needsPop) {
+      try { history.back(); } catch (e) { /* ignore */ }
+    }
   }
 
   /* ================================================================
@@ -1001,9 +1022,12 @@
     conversationPhase = "closing";
     session++;
     clearCloseTimer();
+    clearReplyTimer();
     hideTyping();
     stopSessionTimer();
     hideQuickReplies();
+    learnerTyping = false;
+    pendingReply = false;
 
     addEarnings(CONVERSATION_EARNINGS);
 
@@ -1016,43 +1040,88 @@
       allowOutsideClick: false,
       allowEscapeKey: false
     }).then(() => {
-      const needsPop = chatHistoryPushed;
       closeChatUI();
-      if (needsPop) {
-        suppressNextPopstate = true;
-        try { history.back(); } catch (e) { /* ignore */ }
-      }
     });
   }
 
   /* ================================================================
-     SEND — each user message advances the script by one learner reply
+     LEARNER REPLY SCHEDULING (debounced)
+     - Tutor speaks → reset the silence timer.
+     - Learner replies once the tutor has been silent for REPLY_SILENCE_MS.
+     - If the tutor speaks again while the learner is typing → the learner
+       finishes that bubble, then replies one more time (pendingReply).
+     ================================================================ */
+  function scheduleLearnerReply(delay = REPLY_SILENCE_MS) {
+    clearReplyTimer();
+    const gen = session;
+    replyTimer = setTimeout(() => {
+      replyTimer = null;
+      if (gen !== session || conversationPhase !== "active") return;
+      if (learnerTyping) { pendingReply = true; return; }
+      deliverNextLearnerMessage();
+    }, delay);
+  }
+
+  function deliverNextLearnerMessage() {
+    if (scriptIndex >= conversationScript.length) return;
+
+    const gen = session;
+    const next = conversationScript[scriptIndex];
+    scriptIndex++;
+
+    learnerTyping = true;
+    showTyping();
+
+    setTimeout(() => {
+      if (gen !== session) return;
+      hideTyping();
+      learnerTyping = false;
+      addBubble(next.t, "in", next.s);
+
+      // Tutor said something while we were typing → answer that too.
+      if (pendingReply) {
+        pendingReply = false;
+        if (scriptIndex < conversationScript.length) {
+          scheduleLearnerReply(1500);
+        }
+      }
+    }, typingDelay(next.t));
+  }
+
+  function scheduleCloseAfterSilence() {
+    clearCloseTimer();
+    const gen = session;
+    closeTimer = setTimeout(() => {
+      closeTimer = null;
+      if (gen !== session || conversationPhase !== "active") return;
+      if (learnerTyping) { scheduleCloseAfterSilence(); return; }
+      closeConversation();
+    }, CLOSE_SILENCE_MS);
+  }
+
+  /* ================================================================
+     SEND — every tutor message resets the learner's silence timer,
+     so multiple bubbles to answer ONE question = ONE learner reply.
      ================================================================ */
   function sendMessage(raw) {
     const text = (raw || "").trim();
-    if (!text || !current || conversationPhase !== "active" || !openerDelivered) return;
+    if (!text || !current || conversationPhase !== "active") return;
 
     addBubble(text, "out");
     msgInput.value = "";
     hideQuickReplies();
 
-    // All learner messages delivered (user replied after the closer)
+    // Wait for the learner's greeting before any scripted reply.
+    if (!openerDelivered) return;
+
+    // Learner has nothing left to say — close after the tutor's turn ends.
     if (scriptIndex >= conversationScript.length) {
-      clearCloseTimer();
-      closeTimer = later(() => { closeConversation(); }, 3000);
+      scheduleCloseAfterSilence();
       return;
     }
 
-    const next = conversationScript[scriptIndex];
-    scriptIndex++;
-
-    later(() => {
-      showTyping();
-      later(() => {
-        hideTyping();
-        addBubble(next.t, "in", next.s);
-      }, typingDelay(next.t));
-    }, readPause(1800, 3200));
+    // Debounced: the learner replies once the tutor stops typing.
+    scheduleLearnerReply();
   }
 
   /* ================================================================
@@ -1152,12 +1221,9 @@
 
   searchEl.addEventListener("input", () => renderList(searchEl.value));
 
+  // In-app back button: let closeChatUI handle both UI and history.
   backBtn.addEventListener("click", () => {
-    if (app.classList.contains("chat-open") && chatHistoryPushed) {
-      try { history.back(); } catch (e) { closeChatUI(); }
-    } else {
-      closeChatUI();
-    }
+    closeChatUI();
   });
 
   composer.addEventListener("submit", e => {
@@ -1166,14 +1232,15 @@
   });
 
   /* ================================================================
-     POPSTATE — browser back button override
+     POPSTATE — hardware / browser back button
+     - If a chat is open, the pushed history entry has just been popped
+       by the browser. Drop chatHistoryPushed (so closeChatUI won't call
+       history.back() again) and close the UI.
+     - If no chat is open, default browser behaviour applies.
      ================================================================ */
   window.addEventListener('popstate', () => {
-    if (suppressNextPopstate) {
-      suppressNextPopstate = false;
-      return;
-    }
     if (app.classList.contains('chat-open')) {
+      chatHistoryPushed = false;
       closeChatUI();
     }
   });
