@@ -110,20 +110,20 @@
         <p>Tell us a little about you and how you'd like to teach.</p>
       </div>
 
-      <form id="signupForm" novalidate>
+      <form id="signupForm" novalidate autocomplete="off">
         <div class="form-group">
-          <input type="text" name="name" id="name" class="form-control" placeholder=" " required autocomplete="name">
+          <input type="text" name="name" id="name" class="form-control" placeholder=" " required autocomplete="off">
           <label for="name" class="form-label">Full Name</label>
         </div>
 
         <div class="form-group">
-          <input type="tel" name="phone" id="phone" class="form-control" placeholder=" " required autocomplete="tel" inputmode="tel">
+          <input type="tel" name="phone" id="phone" class="form-control" placeholder=" " required autocomplete="off" inputmode="tel">
           <label for="phone" class="form-label">Phone Number</label>
           <span class="field-hint">We'll use this for M-Pesa payouts (e.g. 0712 345 678).</span>
         </div>
 
         <div class="form-group">
-          <input type="email" name="email" id="email" class="form-control" placeholder=" " required autocomplete="email">
+          <input type="email" name="email" id="email" class="form-control" placeholder=" " required autocomplete="off">
           <label for="email" class="form-label">Email Address</label>
         </div>
 
@@ -179,6 +179,14 @@
     const form = document.getElementById("signupForm");
     const overlay = document.getElementById("loadingOverlay");
 
+    /* ----------------------------------------------------------------
+       Every visit to this page starts with a clean slate.
+       Any previous tutorProfile stored in this browser session is
+       wiped the moment the script runs — so leaving and coming back
+       never reveals old signup data.
+       ---------------------------------------------------------------- */
+    try { sessionStorage.removeItem("tutorProfile"); } catch (_) { /* ignore */ }
+
     function fireError(title, text) {
       Swal.fire({
         title,
@@ -203,6 +211,8 @@
       if (!emailRegex.test(email)) return fireError("Invalid Email", "Please enter a valid email address.");
       if (!experience) return fireError("Missing Experience", "Please select your teaching experience.");
 
+      // Temporary handoff to chat.html — sessionStorage is cleared
+      // the next time this signup page loads.
       const profile = {
         name,
         phone,
@@ -211,7 +221,7 @@
         bio,
         createdAt: new Date().toISOString()
       };
-      sessionStorage.setItem("tutorProfile", JSON.stringify(profile));
+      try { sessionStorage.setItem("tutorProfile", JSON.stringify(profile)); } catch (_) {}
 
       overlay.classList.add("show");
       setTimeout(() => {
@@ -219,13 +229,9 @@
       }, 2200);
     });
 
+    // No form pre-fill — every visit starts completely blank.
+    // The load handler only hides the overlay in case of bfcache restore.
     window.addEventListener("load", () => {
-      const saved = JSON.parse(sessionStorage.getItem("tutorProfile") || "{}");
-      if (saved.name) document.getElementById("name").value = saved.name;
-      if (saved.phone) document.getElementById("phone").value = saved.phone;
-      if (saved.email) document.getElementById("email").value = saved.email;
-      if (saved.experience) document.getElementById("experience").value = saved.experience;
-      if (saved.bio) document.getElementById("bio").value = saved.bio;
       overlay.classList.remove("show");
     });
 

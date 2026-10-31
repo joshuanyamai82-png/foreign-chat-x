@@ -288,26 +288,16 @@
   ];
 
   const COUNTRIES = [
-    { name:"United Kingdom", flag:"🇬🇧" },
-    { name:"United States",  flag:"🇺🇸" },
-    { name:"Italy",          flag:"🇮🇹" },
-    { name:"Japan",          flag:"🇯🇵" },
-    { name:"Germany",        flag:"🇩🇪" },
-    { name:"Nigeria",        flag:"🇳🇬" },
-    { name:"Brazil",         flag:"🇧🇷" },
-    { name:"France",         flag:"🇫🇷" },
-    { name:"Netherlands",    flag:"🇳🇱" },
-    { name:"India",          flag:"🇮🇳" },
-    { name:"Egypt",          flag:"🇪🇬" },
-    { name:"Spain",          flag:"🇪🇸" },
-    { name:"South Korea",    flag:"🇰🇷" },
-    { name:"Australia",      flag:"🇦🇺" },
-    { name:"Mexico",         flag:"🇲🇽" },
-    { name:"Poland",         flag:"🇵🇱" },
-    { name:"China",          flag:"🇨🇳" },
-    { name:"Morocco",        flag:"🇲🇦" },
-    { name:"Sweden",         flag:"🇸🇪" },
-    { name:"Pakistan",       flag:"🇵🇰" }
+    { name:"United Kingdom", flag:"🇬🇧" },{ name:"United States", flag:"🇺🇸" },
+    { name:"Italy", flag:"🇮🇹" },{ name:"Japan", flag:"🇯🇵" },
+    { name:"Germany", flag:"🇩🇪" },{ name:"Nigeria", flag:"🇳🇬" },
+    { name:"Brazil", flag:"🇧🇷" },{ name:"France", flag:"🇫🇷" },
+    { name:"Netherlands", flag:"🇳🇱" },{ name:"India", flag:"🇮🇳" },
+    { name:"Egypt", flag:"🇪🇬" },{ name:"Spain", flag:"🇪🇸" },
+    { name:"South Korea", flag:"🇰🇷" },{ name:"Australia", flag:"🇦🇺" },
+    { name:"Mexico", flag:"🇲🇽" },{ name:"Poland", flag:"🇵🇱" },
+    { name:"China", flag:"🇨🇳" },{ name:"Morocco", flag:"🇲🇦" },
+    { name:"Sweden", flag:"🇸🇪" },{ name:"Pakistan", flag:"🇵🇰" }
   ];
 
   const LEVELS = ["Beginner","Elementary","Intermediate"];
@@ -345,9 +335,9 @@
       country: country.name,
       flag: country.flag,
       level: LEVELS[i % LEVELS.length],
-      online: true,                     // every learner is online
+      online: true,
       goal: GOALS[i % GOALS.length],
-      rate: 100 + ((i * 53) % 151)      // $100 – $250 / hr
+      rate: 100 + ((i * 53) % 151)
     };
   });
 
@@ -360,13 +350,106 @@
     color: PALETTE[i % PALETTE.length]
   }));
 
-  const CANNED = [
-    { t:"Asante sana.",                                s:"Thank you very much." },
-    { t:"Habari yako?",                                s:"How are you?" },
-    { t:"Polepole tafadhali.",                         s:"Slowly, please." },
-    { t:"Nimefurahi. Ninajifunza kila siku.",          s:"I am glad. I study every day." },
-    { t:"Hii ni nzuri sana.",                          s:"This is very good." },
-    { t:"Naweza kusema Kiswahili kidogo.",             s:"I can speak a little Swahili." }
+  /* ================================================================
+     CONVERSATION CONTENT
+     - OPENERS:   50 learner-style opening messages
+     - FOLLOWUPS: learner reaction / clarification prompts
+     - CLOSERS:   natural sign-offs
+     Each chat: opener + 2-3 follow-ups + closer = 4 or 5 learner messages
+     ================================================================ */
+
+  const OPENERS = [
+    { t: "Jambo! I'm {{first}} 👋 Can you teach me how to greet someone in Swahili?", s: "" },
+    { t: "Hi! I'm {{first}}. How do you say hello in Swahili?", s: "" },
+    { t: "Hey! {{first}} here. How do I say goodbye?", s: "" },
+    { t: "Habari! Could you teach me how to say thank you properly?", s: "" },
+    { t: "Hi, {{first}} here. What does 'Jambo' actually mean?", s: "" },
+    { t: "How do I introduce myself in Swahili?", s: "" },
+    { t: "How do you say good morning?", s: "" },
+    { t: "What does 'habari' mean? I keep hearing it everywhere.", s: "" },
+    { t: "Teach me how to say 'how are you?'", s: "" },
+    { t: "How do I say please and thank you?", s: "" },
+    { t: "How do you say 'excuse me'?", s: "" },
+    { t: "How do I say 'I'm sorry'?", s: "" },
+    { t: "Can you teach me numbers one to ten?", s: "" },
+    { t: "How do I say yes and no?", s: "" },
+    { t: "How do I ask for directions to the market?", s: "" },
+    { t: "How do I say 'where is the bathroom?'", s: "" },
+    { t: "How do I say 'how much does this cost?'", s: "" },
+    { t: "Teach me how to order food at a restaurant.", s: "" },
+    { t: "How do you say 'delicious'?", s: "" },
+    { t: "How do I say 'I don't understand'?", s: "" },
+    { t: "How do I ask someone to speak slowly?", s: "" },
+    { t: "How do I ask 'what is your name?'", s: "" },
+    { t: "How do I say 'my name is...'?", s: "" },
+    { t: "How do I say 'nice to meet you'?", s: "" },
+    { t: "Teach me how to say 'see you later'.", s: "" },
+    { t: "How do I say good night?", s: "" },
+    { t: "How do I say welcome?", s: "" },
+    { t: "Teach me how to say 'friend' in Swahili.", s: "" },
+    { t: "How do I say 'family'?", s: "" },
+    { t: "How do you say 'love'?", s: "" },
+    { t: "How do I say 'I'm hungry'?", s: "" },
+    { t: "How do I say 'I'm tired'?", s: "" },
+    { t: "How do I say 'I'm happy'?", s: "" },
+    { t: "Teach me how to say 'let's go'.", s: "" },
+    { t: "How do I say 'stop' or 'wait'?", s: "" },
+    { t: "How do I say 'come here' politely?", s: "" },
+    { t: "How do I say 'I need help'?", s: "" },
+    { t: "How do I say 'call me later'?", s: "" },
+    { t: "What's the Swahili word for water?", s: "" },
+    { t: "Can you teach me the days of the week?", s: "" },
+    { t: "How do I say 'today' and 'tomorrow'?", s: "" },
+    { t: "How do I say 'I love Kenya'?", s: "" },
+    { t: "How do I say 'I'm learning Swahili'?", s: "" },
+    { t: "How do I ask 'do you speak English?'", s: "" },
+    { t: "How do I say 'one moment please'?", s: "" },
+    { t: "How do I ask someone's age politely?", s: "" },
+    { t: "How do I ask 'where are you from?'", s: "" },
+    { t: "How do I say 'I'm from...'?", s: "" },
+    { t: "How do I say 'you're welcome'?", s: "" },
+    { t: "How do I say 'safe travels'?", s: "" }
+  ];
+
+  const FOLLOWUPS = [
+    { t: "Asante! Can you give me an example sentence?", s: "" },
+    { t: "That's helpful — how do I pronounce it?", s: "" },
+    { t: "Can you spell it out for me?", s: "" },
+    { t: "How would I use that in a real conversation?", s: "" },
+    { t: "Does the greeting change depending on the time of day?", s: "" },
+    { t: "How would I say that to an elder?", s: "" },
+    { t: "Is that formal or informal?", s: "" },
+    { t: "Could you say it slowly, tafadhali?", s: "" },
+    { t: "How would a local reply to me?", s: "" },
+    { t: "Can you use it in a sentence?", s: "" },
+    { t: "What should I say back if someone greets me that way?", s: "" },
+    { t: "Does the meaning change with tone?", s: "" },
+    { t: "How do you write it?", s: "" },
+    { t: "Is there a shorter way to say it?", s: "" },
+    { t: "What's the most common way to say it in Nairobi?", s: "" },
+    { t: "How would I say it politely?", s: "" },
+    { t: "Can you teach me one more related phrase?", s: "" },
+    { t: "That makes sense. What about the response?", s: "" },
+    { t: "How would this be used at a market?", s: "" },
+    { t: "Do you say that to friends too?", s: "" },
+    { t: "Asante sana — how would I thank someone more warmly?", s: "" },
+    { t: "What does the word actually translate to?", s: "" },
+    { t: "How is it different from English?", s: "" },
+    { t: "Is that a common phrase people actually use?", s: "" },
+    { t: "Could you say that one more time? I want to write it down.", s: "" }
+  ];
+
+  const CLOSERS = [
+    { t: "Asante sana for the lesson! I'll practise this today. 👋", s: "Thank you so much for the lesson! I'll practise this today." },
+    { t: "This was so helpful. Talk soon! 👋", s: "" },
+    { t: "Asante! I learned a lot today. Kwaheri!", s: "Thank you! I learned a lot today. Goodbye!" },
+    { t: "Perfect — I'll try these with my Kenyan friends. Asante!", s: "" },
+    { t: "Thank you! I feel more confident already. Kwaheri 👋", s: "Thank you! I feel more confident already. Goodbye." },
+    { t: "Asante sana. Same time tomorrow?", s: "Thank you very much. Same time tomorrow?" },
+    { t: "This was great. I'll practise and come back. Kwaheri!", s: "" },
+    { t: "You're a great teacher. Asante! 👋", s: "" },
+    { t: "I'm so glad I found you. Asante sana!", s: "" },
+    { t: "Sawa sawa — got it. Asante, kwaheri!", s: "Alright — got it. Thanks, goodbye!" }
   ];
 
   const QUICK = [
@@ -375,6 +458,27 @@
     "Unajifunza Kiswahili?",
     "Pole pole, tutasaidiana."
   ];
+
+  function pickRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function buildConversationScript(contact) {
+    const total = 4 + Math.floor(Math.random() * 2); // 4 or 5 learner messages
+    const followupCount = total - 2;
+    const shuffled = [...FOLLOWUPS].sort(() => Math.random() - 0.5);
+    const followups = shuffled.slice(0, followupCount);
+    const opener = pickRandom(OPENERS);
+    const closer = pickRandom(CLOSERS);
+    return [
+      {
+        t: (opener.t || "").replace(/\{\{first\}\}/g, contact.first),
+        s: (opener.s || "").replace(/\{\{first\}\}/g, contact.first)
+      },
+      ...followups,
+      closer
+    ];
+  }
 
   /* ---------------- Elements ---------------- */
   const app          = document.getElementById("app");
@@ -403,13 +507,14 @@
   let current   = null;
   let session   = 0;
   let typingEl  = null;
-  let replyIdx  = 0;
-  let autoReplyScheduled = false;
-  let autoReplySent = false;
   let closeTimer = null;
   let conversationPhase = "idle";
   let chatHistoryPushed = false;
   let suppressNextPopstate = false;
+
+  let conversationScript = [];
+  let scriptIndex = 0;
+  let openerDelivered = false;
 
   let stkTimerInterval = null;
   let pollInterval = null;
@@ -429,8 +534,6 @@
 
   /* ================================================================
      PER-LEARNER ACTIVATION
-     Each learner is unlocked individually. Paying for one learner
-     only opens that learner's chat — not all of them.
      ================================================================ */
   const ACTIVATED_KEY = "activatedContacts";
 
@@ -452,7 +555,7 @@
   }
 
   /* ================================================================
-     PHONE NORMALIZATION (client-side fallback — backend re-validates)
+     PHONE NORMALIZATION
      ================================================================ */
   function normalizePhoneForBackend(raw) {
     if (!raw) return null;
@@ -476,9 +579,7 @@
   }
 
   /* ================================================================
-     BACKEND — initiate STK via /api/initiate-payment
-     The api/initiate-payment.js handler converts 2547… → 07… and
-     talks to MegaPay, returning { reference, external_reference }.
+     PAYMENT — initiate
      ================================================================ */
   async function initiateSTK(phone254, amount) {
     const response = await fetch('/api/initiate-payment', {
@@ -491,8 +592,6 @@
     });
 
     const result = await response.json().catch(() => ({}));
-    console.log('[api/initiate-payment] response:', result);
-
     if (!response.ok || !result.success || !result.reference) {
       throw new Error(result.error || result.message || 'Payment initiation failed');
     }
@@ -501,9 +600,7 @@
   }
 
   /* ================================================================
-     BACKEND — poll /api/verify-payment
-     The handler normalises MegaPay's response into
-     COMPLETED / PENDING / FAILED / CANCELLED / UNKNOWN.
+     PAYMENT — poll status
      ================================================================ */
   function pollStatus(reference, maxAttempts = 30) {
     return new Promise((resolve, reject) => {
@@ -513,8 +610,6 @@
         try {
           const response = await fetch(`/api/verify-payment?reference=${encodeURIComponent(reference)}`);
           const result = await response.json().catch(() => ({}));
-          console.log('[api/verify-payment] response:', result);
-
           const status = String(result.status || '').toUpperCase();
 
           if (status === 'COMPLETED') {
@@ -528,7 +623,6 @@
             reject(new Error('Verification timed out'));
           }
         } catch (err) {
-          console.error('[api/verify-payment] error:', err);
           if (attempts >= maxAttempts) {
             clearInterval(pollInterval); pollInterval = null;
             reject(new Error('Verification failed'));
@@ -563,7 +657,7 @@
   }
 
   /* ================================================================
-     CHARGE FEE — modal → /api/initiate-payment → poll → resolve
+     CHARGE FEE
      ================================================================ */
   async function chargeFee({ amount, title, description }) {
     const result = await Swal.fire({
@@ -624,7 +718,6 @@
         const raw = input.value.trim();
         if (!raw) return showError('Please enter your phone number.');
 
-        // Validate against the backend first, then fall back to local rules.
         let normalized = null;
         try {
           const r = await fetch('/api/normalize-phone', {
@@ -672,7 +765,6 @@
       hideStkOverlay();
       return true;
     } catch (err) {
-      console.error('Payment flow error:', err);
       hideStkOverlay();
       Swal.close();
       await Swal.fire({
@@ -723,10 +815,13 @@
     const gen = session;
     return setTimeout(() => { if (gen === session) fn(); }, ms);
   }
+
+  // Human-like typing: slower than before, scaled to message length
   function typingDelay(text) {
-    const ms = 750 + text.length * 60;
-    return Math.max(1100, Math.min(ms, 3000));
+    const ms = 1200 + (text ? text.length : 0) * 90;
+    return Math.max(2000, Math.min(ms, 5500));
   }
+
   const readPause = (min, max) => min + Math.random() * (max - min);
   function clearCloseTimer() {
     if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
@@ -842,10 +937,13 @@
   function openChat(contact) {
     session++;
     current = contact;
-    autoReplyScheduled = false;
-    autoReplySent = false;
     conversationPhase = "active";
     clearCloseTimer();
+
+    // Build the per-chat script
+    conversationScript = buildConversationScript(contact);
+    scriptIndex = 0;
+    openerDelivered = false;
 
     chatAvatar.textContent = contact.initials;
     chatAvatar.style.setProperty("--av", contact.color);
@@ -868,28 +966,22 @@
     requestAnimationFrame(() => { messages.scrollTop = 0; });
 
     startSessionTimer();
-    playGreeting(contact);
+    deliverOpener();
   }
 
-  function playGreeting(c) {
-    const lines = [
-      { t: "Jambo! 👋", s: "Hello — a standard Swahili greeting." },
-      { t: `Mimi ni ${c.first}. Nimefurahi kukutana nawe.`, s: `My name is ${c.first}. It is a pleasure to meet you.` },
-      { t: `My goal is to ${c.goal}. I would value your guidance.`, s: "" }
-    ];
-    let i = 0;
-    const deliverNext = () => {
-      if (i >= lines.length) { showQuickReplies(); return; }
-      const line = lines[i];
+  function deliverOpener() {
+    if (!conversationScript.length) return;
+    const opener = conversationScript[0];
+    later(() => {
       showTyping();
       later(() => {
         hideTyping();
-        addBubble(line.t, "in", line.s);
-        i++;
-        later(deliverNext, readPause(700, 1200));
-      }, typingDelay(line.t));
-    };
-    later(deliverNext, readPause(950, 1500));
+        addBubble(opener.t, "in", opener.s);
+        scriptIndex = 1;
+        openerDelivered = true;
+        showQuickReplies();
+      }, typingDelay(opener.t));
+    }, readPause(900, 1500));
   }
 
   function closeChatUI() {
@@ -903,6 +995,9 @@
     current = null;
     msgInput.value = "";
     chatHistoryPushed = false;
+    openerDelivered = false;
+    conversationScript = [];
+    scriptIndex = 0;
     app.classList.remove("chat-open");
 
     setTimeout(() => {
@@ -945,35 +1040,33 @@
   }
 
   /* ================================================================
-     SEND
+     SEND — each user message advances the script by one learner reply
      ================================================================ */
   function sendMessage(raw) {
     const text = (raw || "").trim();
-    if (!text || !current || conversationPhase !== "active") return;
+    if (!text || !current || conversationPhase !== "active" || !openerDelivered) return;
 
     addBubble(text, "out");
     msgInput.value = "";
     hideQuickReplies();
 
-    if (autoReplySent) {
+    // All learner messages have been delivered (user replied after the closer)
+    if (scriptIndex >= conversationScript.length) {
       clearCloseTimer();
       closeTimer = later(() => { closeConversation(); }, 3000);
       return;
     }
 
-    if (!autoReplyScheduled) {
-      autoReplyScheduled = true;
-      const reply = CANNED[replyIdx % CANNED.length];
-      replyIdx++;
+    const next = conversationScript[scriptIndex];
+    scriptIndex++;
+
+    later(() => {
+      showTyping();
       later(() => {
-        showTyping();
-        later(() => {
-          hideTyping();
-          addBubble(reply.t, "in", reply.s);
-          autoReplySent = true;
-        }, typingDelay(reply.t));
-      }, readPause(1300, 2200));
-    }
+        hideTyping();
+        addBubble(next.t, "in", next.s);
+      }, typingDelay(next.t));
+    }, readPause(1800, 3200));
   }
 
   /* ================================================================
@@ -1086,17 +1179,9 @@
     sendMessage(msgInput.value);
   });
 
-  /* ================================================================
-     POPSTATE — browser back button override
-     ================================================================ */
   window.addEventListener('popstate', () => {
-    if (suppressNextPopstate) {
-      suppressNextPopstate = false;
-      return;
-    }
-    if (app.classList.contains('chat-open')) {
-      closeChatUI();
-    }
+    if (suppressNextPopstate) { suppressNextPopstate = false; return; }
+    if (app.classList.contains('chat-open')) closeChatUI();
   });
 
   /* ================================================================
