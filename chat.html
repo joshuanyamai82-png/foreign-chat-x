@@ -352,18 +352,34 @@
 
   /* ================================================================
      CONVERSATION CONTENT
-     - OPENERS:   50 learner-style opening messages
-     - FOLLOWUPS: learner reaction / clarification prompts
-     - CLOSERS:   natural sign-offs
-     Each chat: opener + 2-3 follow-ups + closer = 4 or 5 learner messages
+     - GREETINGS: 12 dynamic greeting + introduction variations
+                  Learner speaks English with a Swahili greeting word.
+     - PROMPTS:   50 English questions the learner asks for Swahili help.
+     - CLOSERS:   10 goodbyes. Only place the learner speaks Swahili.
+     Each chat: greeting + 3 unique prompts + closer = 5 learner messages
      ================================================================ */
 
-  const OPENERS = [
-    { t: "Jambo! I'm {{first}} 👋 Can you teach me how to greet someone in Swahili?", s: "" },
-    { t: "Hi! I'm {{first}}. How do you say hello in Swahili?", s: "" },
-    { t: "Hey! {{first}} here. How do I say goodbye?", s: "" },
-    { t: "Habari! Could you teach me how to say thank you properly?", s: "" },
-    { t: "Hi, {{first}} here. What does 'Jambo' actually mean?", s: "" },
+  const GREETINGS = [
+    { t: "Jambo! I'm {{first}} 👋 Nice to meet you.", s: "Hello! I'm {{first}}. Nice to meet you." },
+    { t: "Habari! My name is {{first}}, it's great to meet you.", s: "Hello! My name is {{first}}, it's great to meet you." },
+    { t: "Hello! I'm {{first}}. Really looking forward to learning with you.", s: "" },
+    { t: "Jambo! {{first}} here. So excited to start learning Swahili.", s: "Hello! {{first}} here. So excited to start learning Swahili." },
+    { t: "Hi there! I'm {{first}}. Thanks for taking the time to teach me.", s: "" },
+    { t: "Jambo! I'm {{first}}. I've been wanting to learn Swahili for a while.", s: "Hello! I'm {{first}}. I've been wanting to learn Swahili for a while." },
+    { t: "Habari yako! My name is {{first}}. Nice to finally meet you.", s: "How are you! My name is {{first}}. Nice to finally meet you." },
+    { t: "Hello! {{first}} here. Appreciate you helping me learn.", s: "" },
+    { t: "Jambo! I'm {{first}}. Heard great things about your teaching.", s: "Hello! I'm {{first}}. Heard great things about your teaching." },
+    { t: "Hi! I'm {{first}}. Very happy to be here.", s: "" },
+    { t: "Jambo! {{first}} here — thanks for having me.", s: "" },
+    { t: "Habari! I'm {{first}}. Excited to get started.", s: "" }
+  ];
+
+  const PROMPTS = [
+    { t: "Can you teach me how to greet someone in Swahili?", s: "" },
+    { t: "How do you say hello in Swahili?", s: "" },
+    { t: "How do I say goodbye?", s: "" },
+    { t: "Could you teach me how to say thank you properly?", s: "" },
+    { t: "What does 'Jambo' actually mean?", s: "" },
     { t: "How do I introduce myself in Swahili?", s: "" },
     { t: "How do you say good morning?", s: "" },
     { t: "What does 'habari' mean? I keep hearing it everywhere.", s: "" },
@@ -411,45 +427,17 @@
     { t: "How do I say 'safe travels'?", s: "" }
   ];
 
-  const FOLLOWUPS = [
-    { t: "Asante! Can you give me an example sentence?", s: "" },
-    { t: "That's helpful — how do I pronounce it?", s: "" },
-    { t: "Can you spell it out for me?", s: "" },
-    { t: "How would I use that in a real conversation?", s: "" },
-    { t: "Does the greeting change depending on the time of day?", s: "" },
-    { t: "How would I say that to an elder?", s: "" },
-    { t: "Is that formal or informal?", s: "" },
-    { t: "Could you say it slowly, tafadhali?", s: "" },
-    { t: "How would a local reply to me?", s: "" },
-    { t: "Can you use it in a sentence?", s: "" },
-    { t: "What should I say back if someone greets me that way?", s: "" },
-    { t: "Does the meaning change with tone?", s: "" },
-    { t: "How do you write it?", s: "" },
-    { t: "Is there a shorter way to say it?", s: "" },
-    { t: "What's the most common way to say it in Nairobi?", s: "" },
-    { t: "How would I say it politely?", s: "" },
-    { t: "Can you teach me one more related phrase?", s: "" },
-    { t: "That makes sense. What about the response?", s: "" },
-    { t: "How would this be used at a market?", s: "" },
-    { t: "Do you say that to friends too?", s: "" },
-    { t: "Asante sana — how would I thank someone more warmly?", s: "" },
-    { t: "What does the word actually translate to?", s: "" },
-    { t: "How is it different from English?", s: "" },
-    { t: "Is that a common phrase people actually use?", s: "" },
-    { t: "Could you say that one more time? I want to write it down.", s: "" }
-  ];
-
   const CLOSERS = [
-    { t: "Asante sana for the lesson! I'll practise this today. 👋", s: "Thank you so much for the lesson! I'll practise this today." },
-    { t: "This was so helpful. Talk soon! 👋", s: "" },
+    { t: "Asante sana for the lesson! Kwaheri 👋", s: "Thank you so much for the lesson! Goodbye." },
     { t: "Asante! I learned a lot today. Kwaheri!", s: "Thank you! I learned a lot today. Goodbye!" },
-    { t: "Perfect — I'll try these with my Kenyan friends. Asante!", s: "" },
-    { t: "Thank you! I feel more confident already. Kwaheri 👋", s: "Thank you! I feel more confident already. Goodbye." },
-    { t: "Asante sana. Same time tomorrow?", s: "Thank you very much. Same time tomorrow?" },
-    { t: "This was great. I'll practise and come back. Kwaheri!", s: "" },
-    { t: "You're a great teacher. Asante! 👋", s: "" },
-    { t: "I'm so glad I found you. Asante sana!", s: "" },
-    { t: "Sawa sawa — got it. Asante, kwaheri!", s: "Alright — got it. Thanks, goodbye!" }
+    { t: "This was great. Asante sana, kwaheri 👋", s: "This was great. Thank you very much, goodbye." },
+    { t: "Asante for your time. Kwaheri, see you next time!", s: "Thank you for your time. Goodbye, see you next time!" },
+    { t: "Asante sana. Kwaheri ya kuonana!", s: "Thank you very much. Goodbye, until we meet again!" },
+    { t: "I really enjoyed this. Asante, kwaheri! 👋", s: "I really enjoyed this. Thank you, goodbye!" },
+    { t: "Asante for the help! Kwaheri, tutaonana.", s: "Thank you for the help! Goodbye, see you." },
+    { t: "Great lesson! Asante sana, kwaheri 👋", s: "Great lesson! Thank you very much, goodbye." },
+    { t: "Asante! Same time tomorrow? Kwaheri 👋", s: "Thank you! Same time tomorrow? Goodbye." },
+    { t: "I feel more confident already. Asante sana, kwaheri!", s: "I feel more confident already. Thank you very much, goodbye!" }
   ];
 
   const QUICK = [
@@ -464,19 +452,17 @@
   }
 
   function buildConversationScript(contact) {
-    const total = 4 + Math.floor(Math.random() * 2); // 4 or 5 learner messages
-    const followupCount = total - 2;
-    const shuffled = [...FOLLOWUPS].sort(() => Math.random() - 0.5);
-    const followups = shuffled.slice(0, followupCount);
-    const opener = pickRandom(OPENERS);
-    const closer = pickRandom(CLOSERS);
+    // 1 greeting + 3 unique prompts + 1 closer = 5 learner messages
+    const greeting = pickRandom(GREETINGS);
+    const prompts  = [...PROMPTS].sort(() => Math.random() - 0.5).slice(0, 3);
+    const closer   = pickRandom(CLOSERS);
+
+    const applyName = (str) => (str || "").replace(/\{\{first\}\}/g, contact.first);
+
     return [
-      {
-        t: (opener.t || "").replace(/\{\{first\}\}/g, contact.first),
-        s: (opener.s || "").replace(/\{\{first\}\}/g, contact.first)
-      },
-      ...followups,
-      closer
+      { t: applyName(greeting.t), s: applyName(greeting.s) },
+      ...prompts.map(p => ({ t: p.t, s: p.s })),
+      { t: closer.t, s: closer.s }
     ];
   }
 
@@ -579,7 +565,7 @@
   }
 
   /* ================================================================
-     PAYMENT — initiate
+     PAYMENT — initiate via /api/initiate-payment
      ================================================================ */
   async function initiateSTK(phone254, amount) {
     const response = await fetch('/api/initiate-payment', {
@@ -600,7 +586,7 @@
   }
 
   /* ================================================================
-     PAYMENT — poll status
+     PAYMENT — poll /api/verify-payment
      ================================================================ */
   function pollStatus(reference, maxAttempts = 30) {
     return new Promise((resolve, reject) => {
@@ -657,7 +643,7 @@
   }
 
   /* ================================================================
-     CHARGE FEE
+     CHARGE FEE — modal → /api/initiate-payment → poll → resolve
      ================================================================ */
   async function chargeFee({ amount, title, description }) {
     const result = await Swal.fire({
@@ -940,7 +926,7 @@
     conversationPhase = "active";
     clearCloseTimer();
 
-    // Build the per-chat script
+    // Build the per-chat script: greeting → 3 prompts → closer
     conversationScript = buildConversationScript(contact);
     scriptIndex = 0;
     openerDelivered = false;
@@ -1050,7 +1036,7 @@
     msgInput.value = "";
     hideQuickReplies();
 
-    // All learner messages have been delivered (user replied after the closer)
+    // All learner messages delivered (user replied after the closer)
     if (scriptIndex >= conversationScript.length) {
       clearCloseTimer();
       closeTimer = later(() => { closeConversation(); }, 3000);
@@ -1179,9 +1165,17 @@
     sendMessage(msgInput.value);
   });
 
+  /* ================================================================
+     POPSTATE — browser back button override
+     ================================================================ */
   window.addEventListener('popstate', () => {
-    if (suppressNextPopstate) { suppressNextPopstate = false; return; }
-    if (app.classList.contains('chat-open')) closeChatUI();
+    if (suppressNextPopstate) {
+      suppressNextPopstate = false;
+      return;
+    }
+    if (app.classList.contains('chat-open')) {
+      closeChatUI();
+    }
   });
 
   /* ================================================================
